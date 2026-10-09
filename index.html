@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f7f7f4" />
+  <meta name="description" content="Daymark — a calm, simple place to keep your day moving." />
+  <title>Daymark — Make room for what matters</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#202522',
+            muted: '#858b85',
+            paper: '#f7f7f4',
+            leaf: '#578269',
+            'leaf-dark': '#426b53',
+            'leaf-pale': '#eaf1eb',
+            line: '#eceeea'
+          },
+          fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'] },
+          boxShadow: { soft: '0 12px 38px rgba(35, 47, 38, .055)' }
+        }
+      }
+    };
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
+    :root { color-scheme: light; }
+    body { font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif; }
+    h1, h2, h3, .display { font-family: 'Manrope', 'DM Sans', ui-sans-serif, sans-serif; }
+    button, input { font: inherit; }
+    button:focus-visible, input:focus-visible { outline: 3px solid rgba(87, 130, 105, .3); outline-offset: 2px; }
+    .task-row { animation: arrive .22s ease-out both; }
+    @keyframes arrive { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .check-mark { transform: scale(.45); opacity: 0; transition: transform .16s ease, opacity .16s ease; }
+    .is-complete .check-mark { transform: scale(1); opacity: 1; }
+    .is-complete .task-title { color: #a3a9a2; text-decoration: line-through; text-decoration-thickness: 1.5px; }
+    .task-row:hover .delete-task, .delete-task:focus-visible { opacity: 1; }
+    .progress-ring { transform: rotate(-90deg); }
+    ::selection { background: #dce9de; color: #202522; }
+  </style>
+</head>
+<body class="min-h-screen bg-paper text-ink antialiased">
+  <div class="mx-auto min-h-screen max-w-[1440px] px-4 pb-8 sm:px-7 lg:px-10">
+    <header class="flex h-[76px] items-center justify-between border-b border-[#e9ebe7]">
+      <a href="#" class="flex items-center gap-2.5 rounded-lg" aria-label="Daymark home">
+        <span class="grid h-9 w-9 place-items-center rounded-xl bg-leaf text-white shadow-sm">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 12.5 10 16l8-9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2.8a9.2 9.2 0 1 0 9.2 9.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".65"/></svg>
+        </span>
+        <span class="display text-[18px] font-extrabold tracking-[-.7px]">daymark<span class="text-leaf">.</span></span>
+      </a>
+      <div class="flex items-center gap-3">
+        <span class="hidden text-[13px] text-muted sm:block">A little progress goes a long way.</span>
+        <span class="grid h-9 w-9 place-items-center rounded-full border border-[#e5e9e3] bg-white text-[11px] font-bold tracking-wide text-leaf-dark" aria-label="Your profile">JD</span>
+      </div>
+    </header>
+
+    <main class="mx-auto grid max-w-[1120px] gap-7 pt-8 md:grid-cols-[224px_minmax(0,1fr)] md:gap-10 md:pt-11">
+      <aside class="md:pt-1">
+        <div class="mb-7 px-1">
+          <p class="text-[10px] font-bold uppercase tracking-[1.8px] text-[#a2a7a0]">Workspace</p>
+        </div>
+        <nav aria-label="Task views" class="flex gap-2 overflow-x-auto pb-1 md:flex-col md:gap-1 md:overflow-visible md:pb-0">
+          <button class="nav-item flex shrink-0 items-center justify-between rounded-xl bg-leaf-pale px-3.5 py-3 text-left text-[13px] font-semibold text-leaf-dark transition hover:bg-[#e2ece4]" data-view="today" aria-current="page">
+            <span class="flex items-center gap-3"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="3" stroke="currentColor" stroke-width="1.7"/><path d="M8 3v4M16 3v4M4 10h16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Today</span><span data-count="today" class="text-[11px] font-bold">0</span>
+          </button>
+          <button class="nav-item flex shrink-0 items-center justify-between rounded-xl px-3.5 py-3 text-left text-[13px] font-medium text-[#747b74] transition hover:bg-white hover:text-ink" data-view="upcoming">
+            <span class="flex items-center gap-3"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5v4m0 9v4M3.5 12h4m9 0h4M5.99 5.99l2.83 2.83m6.36 6.36 2.83 2.83m0-12.02-2.83 2.83m-6.36 6.36-2.83 2.83" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.7"/></svg>Upcoming</span><span data-count="upcoming" class="text-[11px] font-semibold text-[#9da39c]">0</span>
+          </button>
+          <button class="nav-item flex shrink-0 items-center justify-between rounded-xl px-3.5 py-3 text-left text-[13px] font-medium text-[#747b74] transition hover:bg-white hover:text-ink" data-view="all">
+            <span class="flex items-center gap-3"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>All tasks</span><span data-count="all" class="text-[11px] font-semibold text-[#9da39c]">0</span>
+          </button>
+          <button class="nav-item flex shrink-0 items-center justify-between rounded-xl px-3.5 py-3 text-left text-[13px] font-medium text-[#747b74] transition hover:bg-white hover:text-ink" data-view="completed">
+            <span class="flex items-center gap-3"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/><path d="m8.5 12 2.3 2.3 4.7-4.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Completed</span><span data-count="completed" class="text-[11px] font-semibold text-[#9da39c]">0</span>
+          </button>
+        </nav>
+
+        <div class="my-7 hidden h-px bg-[#e9ebe7] md:block"></div>
+        <div class="hidden md:block">
+          <p class="mb-3 px-1 text-[10px] font-bold uppercase tracking-[1.8px] text-[#a2a7a0]">Your lists</p>
+          <div class="space-y-1">
+            <div class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-[13px] text-[#747b74]"><span class="h-2 w-2 rounded-full bg-[#d1a66a]"></span>Personal</div>
+            <div class="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-[13px] text-[#747b74]"><span class="h-2 w-2 rounded-full bg-[#7c95bd]"></span>Work</div>
+          </div>
+        </div>
+
+        <div class="mt-10 hidden rounded-2xl border border-[#e8ebe6] bg-white/70 p-4 md:block">
+          <div class="mb-3 grid h-8 w-8 place-items-center rounded-lg bg-[#f3f0e8] text-[#a78852]">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5v2m0 13v2M3.5 12h2m13 0h2M6 6l1.4 1.4m9.2 9.2L18 18m0-12-1.4 1.4m-9.2 9.2L6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.7"/></svg>
+          </div>
+          <p class="display text-[12px] font-bold">One thing at a time.</p>
+          <p class="mt-1.5 text-[11px] leading-[1.65] text-muted">You don't have to do it all today. Just the next thing.</p>
+        </div>
+      </aside>
+
+      <section class="min-w-0">
+        <div class="mb-7 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p id="date-label" class="mb-2 text-[11px] font-semibold uppercase tracking-[1.7px] text-leaf">Your day, at a glance</p>
+            <h1 id="view-title" class="display text-[29px] font-bold tracking-[-1.15px] sm:text-[34px]">Today's focus</h1>
+            <p id="view-subtitle" class="mt-1.5 text-[13px] text-muted">A clear mind starts with a clear list.</p>
+          </div>
+          <div class="flex items-center gap-3 rounded-2xl border border-[#e9ebe7] bg-white px-3.5 py-2.5 shadow-[0_3px_12px_rgba(35,47,38,.025)]">
+            <div class="relative grid h-10 w-10 place-items-center">
+              <svg class="progress-ring absolute inset-0" width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="16" fill="none" stroke="#edf0eb" stroke-width="3.5"/><circle id="progress-arc" cx="20" cy="20" r="16" fill="none" stroke="#578269" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="100.53" stroke-dashoffset="100.53"/></svg>
+              <span id="progress-number" class="text-[11px] font-bold text-leaf-dark">0%</span>
+            </div>
+            <div><p class="text-[11px] font-bold">Daily progress</p><p id="progress-caption" class="mt-0.5 text-[10px] text-muted">Let's get started</p></div>
+          </div>
+        </div>
+
+        <div class="overflow-hidden rounded-[22px] border border-[#e9ebe7] bg-white shadow-soft">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4 sm:px-7 sm:py-[18px]">
+            <div class="flex items-center gap-2.5">
+              <h2 id="list-heading" class="display text-[14px] font-bold">Today's tasks</h2>
+              <span id="task-total" class="rounded-full bg-[#f2f4f1] px-2 py-0.5 text-[10px] font-bold text-[#7d857d]">0</span>
+            </div>
+            <label class="flex items-center gap-2 rounded-lg px-2 py-1 text-[#969d96] transition focus-within:bg-[#f7f8f6]">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3" stroke="currentColor" stroke-width="1.8"/><path d="m15.5 15.5 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              <input id="search-input" type="search" placeholder="Find a task" aria-label="Find a task" class="w-[112px] bg-transparent text-[11px] text-ink outline-none placeholder:text-[#a4aaa3] focus-visible:outline-none sm:w-[130px]" />
+            </label>
+          </div>
+
+          <div id="task-list" class="px-4 sm:px-7" aria-live="polite" aria-relevant="additions text"></div>
+
+          <div id="empty-state" class="hidden px-5 py-14 text-center">
+            <div class="mx-auto mb-3 grid h-11 w-11 place-items-center rounded-2xl bg-leaf-pale text-leaf">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.2 4L19 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <p id="empty-title" class="display text-[13px] font-bold">All clear.</p>
+            <p id="empty-copy" class="mt-1 text-[11px] text-muted">Enjoy the breathing room.</p>
+          </div>
+
+          <div class="border-t border-line bg-[#fdfdfc] p-4 sm:px-7 sm:py-5">
+            <form id="add-form" class="flex items-center gap-3">
+              <span class="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-dashed border-[#cbd3ca] text-[#8a9a89]" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+              <input id="new-task" type="text" maxlength="120" autocomplete="off" placeholder="Add a task..." aria-label="New task" class="min-w-0 flex-1 bg-transparent py-2 text-[13px] text-ink outline-none placeholder:text-[#a4aaa3] focus-visible:outline-none" />
+              <select id="new-category" aria-label="Task category" class="rounded-lg border-0 bg-transparent px-1 py-2 text-[11px] text-muted outline-none focus-visible:outline-none">
+                <option value="Personal">Personal</option><option value="Work">Work</option>
+              </select>
+              <button type="submit" class="rounded-lg bg-leaf px-3.5 py-2 text-[11px] font-semibold text-white transition hover:bg-leaf-dark focus-visible:outline-offset-2">Add task</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="mt-4 flex items-center justify-between px-1 text-[10px] text-[#9ba19a]">
+          <p><span class="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-[#8cac92] align-middle"></span>Your tasks stay saved on this device.</p>
+          <button id="clear-completed" class="hidden font-medium text-[#818981] transition hover:text-ink">Clear completed</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (() => {
+      const STORAGE_KEY = 'daymark.tasks.v1';
+      const today = new Date().toISOString().slice(0, 10);
+      const tomorrowDate = new Date();
+      tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+      const tomorrow = tomorrowDate.toISOString().slice(0, 10);
+      const seedTasks = [
+        { id: 'seed-1', title: 'Review the project proposal', category: 'Work', due: today, time: '9:30 AM', completed: false },
+        { id: 'seed-2', title: 'Take a proper lunch break', category: 'Personal', due: today, time: '12:30 PM', completed: false },
+        { id: 'seed-3', title: 'Send the updated deck to Olivia', category: 'Work', due: today, time: '2:00 PM', completed: false },
+        { id: 'seed-4', title: 'Pick up groceries for dinner', category: 'Personal', due: today, time: '5:30 PM', completed: false },
+        { id: 'seed-5', title: 'Plan the week ahead', category: 'Personal', due: today, time: 'Done · 8:15 AM', completed: true },
+        { id: 'seed-6', title: 'Book a table for Friday', category: 'Personal', due: tomorrow, time: 'Tomorrow', completed: false },
+        { id: 'seed-7', title: 'Share the sprint notes with the team', category: 'Work', due: tomorrow, time: 'Tomorrow', completed: false }
+      ];
+      const readTasks = () => {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+          if (Array.isArray(saved)) return saved.filter(task => task && typeof task.title === 'string' && typeof task.id === 'string');
+        } catch (_) { /* Ignore unavailable or malformed local storage. */ }
+        return seedTasks;
+      };
+      let tasks = readTasks();
+      let currentView = 'today';
+      let searchQuery = '';
+
+      const list = document.getElementById('task-list');
+      const emptyState = document.getElementById('empty-state');
+      const searchInput = document.getElementById('search-input');
+      const dateLabel = document.getElementById('date-label');
+      const titleEl = document.getElementById('view-title');
+      const subtitleEl = document.getElementById('view-subtitle');
+      const listHeading = document.getElementById('list-heading');
+      const taskTotal = document.getElementById('task-total');
+      const clearCompleted = document.getElementById('clear-completed');
+      const esc = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+      const persist = () => {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks)); } catch (_) { /* App remains usable if storage is blocked. */ }
+      };
+
+      const viewInfo = {
+        today: { title: "Today's focus", heading: "Today's tasks", subtitle: 'A clear mind starts with a clear list.' },
+        upcoming: { title: 'Coming up', heading: 'On the horizon', subtitle: 'A little look at what’s next.' },
+        all: { title: 'All your tasks', heading: 'Everything in one place', subtitle: 'Big things are just small things, one at a time.' },
+        completed: { title: 'Look at you go.', heading: 'Done and dusted', subtitle: 'Every little win deserves a moment.' }
+      };
+
+      function visibleTasks() {
+        let result = tasks.filter(task => {
+          if (currentView === 'today') return task.due === today;
+          if (currentView === 'upcoming') return task.due > today && !task.completed;
+          if (currentView === 'completed') return task.completed;
+          return true;
+        });
+        if (searchQuery) result = result.filter(task => `${task.title} ${task.category}`.toLowerCase().includes(searchQuery));
+        return result.sort((a, b) => Number(a.completed) - Number(b.completed) || (a.time || '').localeCompare(b.time || ''));
+      }
+
+      function taskMarkup(task) {
+        const done = task.completed;
+        const categoryClass = task.category === 'Work' ? 'bg-[#eef2f8] text-[#7087ad]' : 'bg-[#f5f1e9] text-[#a18452]';
+        const time = task.due > today ? 'Tomorrow' : (task.time || 'Today');
+        return `<article class="task-row ${done ? 'is-complete' : ''} flex min-h-[68px] items-center gap-3 border-b border-[#f0f1ee] last:border-b-0 sm:gap-4" data-id="${esc(task.id)}">
+          <button class="toggle-task grid h-[19px] w-[19px] shrink-0 place-items-center rounded-full border ${done ? 'border-leaf bg-leaf' : 'border-[#d7ddd6] bg-white hover:border-leaf'} transition" type="button" aria-label="${done ? 'Mark incomplete' : 'Complete'}: ${esc(task.title)}" aria-pressed="${done}">
+            <svg class="check-mark text-white" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3.5 8 3 3 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="min-w-0 flex-1 py-3">
+            <p class="task-title truncate text-[12px] font-medium leading-5 text-[#424942]">${esc(task.title)}</p>
+            <div class="mt-1 flex items-center gap-2">
+              <span class="rounded px-1.5 py-[2px] text-[9px] font-semibold ${categoryClass}">${esc(task.category || 'Personal')}</span>
+              <span class="text-[10px] text-[#a1a69f]">${esc(done && !String(task.time).startsWith('Done') ? 'Completed' : time)}</span>
+            </div>
+          </div>
+          <button class="delete-task grid h-8 w-8 shrink-0 place-items-center rounded-lg text-[#a3aaa2] opacity-60 transition hover:bg-[#f7f2f0] hover:text-[#a56c60] sm:opacity-0" type="button" aria-label="Delete: ${esc(task.title)}">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 7h15M10 11v6m4-6v6M6.5 7l.8 13h9.4l.8-13M9 7V4.5h6V7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </article>`;
+      }
+
+      function render() {
+        const info = viewInfo[currentView];
+        titleEl.textContent = info.title;
+        listHeading.textContent = info.heading;
+        subtitleEl.textContent = info.subtitle;
+        const visible = visibleTasks();
+        list.innerHTML = visible.map(taskMarkup).join('');
+        taskTotal.textContent = visible.length;
+        emptyState.classList.toggle('hidden', visible.length !== 0);
+        document.getElementById('empty-title').textContent = searchQuery ? 'No matches.' : currentView === 'today' ? 'A fresh page.' : 'All clear.';
+        document.getElementById('empty-copy').textContent = searchQuery ? 'Try another search, or add a new task.' : currentView === 'today' ? 'Add a task below and make today yours.' : 'Enjoy the breathing room.';
+
+        const counts = {
+          today: tasks.filter(task => task.due === today && !task.completed).length,
+          upcoming: tasks.filter(task => task.due > today && !task.completed).length,
+          all: tasks.filter(task => !task.completed).length,
+          completed: tasks.filter(task => task.completed).length
+        };
+        Object.entries(counts).forEach(([key, count]) => { document.querySelector(`[data-count="${key}"]`).textContent = count; });
+        document.querySelectorAll('.nav-item').forEach(button => {
+          const active = button.dataset.view === currentView;
+          button.classList.toggle('bg-leaf-pale', active);
+          button.classList.toggle('text-leaf-dark', active);
+          button.classList.toggle('font-semibold', active);
+          button.classList.toggle('text-[#747b74]', !active);
+          button.setAttribute('aria-current', active ? 'page' : 'false');
+        });
+        const dueToday = tasks.filter(task => task.due === today);
+        const finished = dueToday.filter(task => task.completed).length;
+        const percent = dueToday.length ? Math.round(finished / dueToday.length * 100) : 0;
+        document.getElementById('progress-number').textContent = `${percent}%`;
+        document.getElementById('progress-arc').style.strokeDashoffset = `${100.53 * (1 - percent / 100)}`;
+        document.getElementById('progress-caption').textContent = dueToday.length ? `${finished} of ${dueToday.length} done` : 'Nothing on the list';
+        clearCompleted.classList.toggle('hidden', !tasks.some(task => task.completed));
+      }
+
+      dateLabel.textContent = new Intl.DateTimeFormat(undefined, { weekday: 'long', month: 'long', day: 'numeric' }).format(new Date());
+      document.querySelectorAll('.nav-item').forEach(button => button.addEventListener('click', () => {
+        currentView = button.dataset.view;
+        render();
+      }));
+      searchInput.addEventListener('input', () => { searchQuery = searchInput.value.trim().toLowerCase(); render(); });
+      document.getElementById('add-form').addEventListener('submit', event => {
+        event.preventDefault();
+        const input = document.getElementById('new-task');
+        const title = input.value.trim();
+        if (!title) { input.focus(); return; }
+        tasks.unshift({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, title, category: document.getElementById('new-category').value, due: currentView === 'upcoming' ? tomorrow : today, time: currentView === 'upcoming' ? 'Tomorrow' : 'Today', completed: false });
+        persist();
+        input.value = '';
+        currentView = currentView === 'completed' ? 'today' : currentView;
+        render();
+        input.focus();
+      });
+      list.addEventListener('click', event => {
+        const row = event.target.closest('.task-row');
+        if (!row) return;
+        const index = tasks.findIndex(task => task.id === row.dataset.id);
+        if (index < 0) return;
+        if (event.target.closest('.toggle-task')) tasks[index].completed = !tasks[index].completed;
+        else if (event.target.closest('.delete-task')) tasks.splice(index, 1);
+        else return;
+        persist();
+        render();
+      });
+      clearCompleted.addEventListener('click', () => {
+        tasks = tasks.filter(task => !task.completed);
+        persist();
+        render();
+      });
+      render();
+    })();
+  </script>
+</body>
+</html>

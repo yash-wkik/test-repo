@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+body { font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif; }
+h1, h2, h3, .display { font-family: 'Manrope', 'DM Sans', ui-sans-serif, sans-serif; }
+button, input { font: inherit; }
+button:focus-visible, input:focus-visible { outline: 3px solid rgba(87, 130, 105, .3); outline-offset: 2px; }
+.task-row { animation: arrive .22s ease-out both; }
+@keyframes arrive { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+.check-mark { transform: scale(.45); opacity: 0; transition: transform .16s ease, opacity .16s ease; }
+.is-complete .check-mark { transform: scale(1); opacity: 1; }
+.is-complete .task-title { color: #a3a9a2; text-decoration: line-through; text-decoration-thickness: 1.5px; }
+.task-row:hover .delete-task, .delete-task:focus-visible { opacity: 1; }
+.progress-ring { transform: rotate(-90deg); }
+::selection { background: #dce9de; color: #202522; }

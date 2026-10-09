@@ -6,42 +6,8 @@
   <meta name="theme-color" content="#f7f7f4" />
   <meta name="description" content="Daymark — a calm, simple place to keep your day moving." />
   <title>Daymark — Make room for what matters</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            ink: '#202522',
-            muted: '#858b85',
-            paper: '#f7f7f4',
-            leaf: '#578269',
-            'leaf-dark': '#426b53',
-            'leaf-pale': '#eaf1eb',
-            line: '#eceeea'
-          },
-          fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'] },
-          boxShadow: { soft: '0 12px 38px rgba(35, 47, 38, .055)' }
-        }
-      }
-    };
-  </script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
-    :root { color-scheme: light; }
-    body { font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif; }
-    h1, h2, h3, .display { font-family: 'Manrope', 'DM Sans', ui-sans-serif, sans-serif; }
-    button, input { font: inherit; }
-    button:focus-visible, input:focus-visible { outline: 3px solid rgba(87, 130, 105, .3); outline-offset: 2px; }
-    .task-row { animation: arrive .22s ease-out both; }
-    @keyframes arrive { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-    .check-mark { transform: scale(.45); opacity: 0; transition: transform .16s ease, opacity .16s ease; }
-    .is-complete .check-mark { transform: scale(1); opacity: 1; }
-    .is-complete .task-title { color: #a3a9a2; text-decoration: line-through; text-decoration-thickness: 1.5px; }
-    .task-row:hover .delete-task, .delete-task:focus-visible { opacity: 1; }
-    .progress-ring { transform: rotate(-90deg); }
-    ::selection { background: #dce9de; color: #202522; }
-  </style>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="./styles.css" />
 </head>
 <body class="min-h-screen bg-paper text-ink antialiased">
   <div class="mx-auto min-h-screen max-w-[1440px] px-4 pb-8 sm:px-7 lg:px-10">
